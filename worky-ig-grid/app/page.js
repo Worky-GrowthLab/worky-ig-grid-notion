@@ -19,6 +19,33 @@ function CarouselIcon() {
 );
 }
 
+function RefreshIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12a9 9 0 1 1-3-6.7" />
+    <path d="M21 4v5h-5" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ dir }) {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+  {dir === 'left' ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 18l6-6-6-6" />}
+   </svg>
+   );
+}
+
+function DotsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+    <circle cx="5" cy="12" r="2" />
+    <circle cx="12" cy="12" r="2" />
+    <circle cx="19" cy="12" r="2" />
+    </svg>
+  );
+}
+
 function CanvaBadge() {
   return (
     <span className="source-chip" title="Diseño de Canva">
@@ -34,9 +61,9 @@ function FormatBadge({ formatos }) {
     return null;
 }
 
-function GridCell({ item, onOpen }) {
+function GridCell({ item, index, onOpen }) {
   return (
-    <button type="button" className="cell" title={item.title} onClick={() => onOpen(item)}>
+    <button type="button" className="cell" title={item.title} onClick={() => onOpen(index)}>
   {item.sourceType === 'canva' ? (
     <>
     <iframe
@@ -66,23 +93,64 @@ className="cell-canva-frame"
 );
 }
 
-function Lightbox({ item, onClose }) {
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+function Lightbox({ items, index, onClose, onNav }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const item = index != null ? items[index] : null;
+
+useEffect(() => {
+  setMenuOpen(false);
+}, [index]);
+
+useEffect(() => {
+  const onKey = (e) => {
+    if (e.key === 'Escape') onClose();
+    if (e.key === 'ArrowLeft') onNav(-1);
+    if (e.key === 'ArrowRight') onNav(1);
+  };
+  window.addEventListener('keydown', onKey);
+  return () => window.removeEventListener('keydown', onKey);
+}, [onClose, onNav]);
 
 if (!item) return null;
+
+const hasMultiple = items.length > 1;
 
 return (
   <div className="lightbox-backdrop" onClick={onClose}>
   <div className="lightbox-box" onClick={(e) => e.stopPropagation()}>
-<button type="button" className="lightbox-close" onClick={onClose} aria-label="Cerrar">
+<div className="lightbox-topbar">
+  <div className="lightbox-menu-wrap">
+  <button
+type="button"
+className="lightbox-icon-btn"
+onClick={() => setMenuOpen((v) => !v)}
+aria-label="Más opciones"
+>
+  <DotsIcon />
+  </button>
+{menuOpen && (
+  <div className="lightbox-menu">
+  <a href={item.url} target="_blank" rel="noreferrer" className="lightbox-menu-item">
+  Abrir en Notion ↗
+  </a>
+  </div>
+)}
+</div>
+<button type="button" className="lightbox-icon-btn" onClick={onClose} aria-label="Cerrar">
   ✕
   </button>
+  </div>
+
+{hasMultiple && (
+  <button
+ type="button"
+ className="lightbox-nav lightbox-nav-left"
+ onClick={() => onNav(-1)}
+ aria-label="Anterior"
+ >
+   <ChevronIcon dir="left" />
+   </button>
+ )}
 
 <div className="lightbox-media">
 {item.sourceType === 'canva' ? (
@@ -92,82 +160,106 @@ return (
               )}
     </div>
 
-              <div className="lightbox-meta">
-              <div className="lightbox-title">{item.title}</div>
-              <div className="lightbox-sub">
-              {item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : ''}
-    {item.estado ? ` · ${item.estado}` : ''}
-    {item.pilar ? ` · ${item.pilar}` : ''}
-    </div>
-    <a href={item.url} target="_blank" rel="noreferrer" className="lightbox-link">
-             Abrir en Notion ↗
-             </a>
-             </div>
-             </div>
-             </div>
-             );
-            }
+              {hasMultiple && (
+                <button
+              type="button"
+              className="lightbox-nav lightbox-nav-right"
+              onClick={() => onNav(1)}
+    aria-label="Siguiente"
+              >
+              <ChevronIcon dir="right" />
+              </button>
+              )}
 
-    export default function GridPage() {
-    const [items, setItems] = useState([]);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState(null);
-      const [cols, setCols] = useState(3);
-      const [dark, setDark] = useState(false);
-      const [selected, setSelected] = useState(null);
+    <div className="lightbox-meta">
+    <div className="lightbox-title">{item.title}</div>
+<div className="lightbox-sub">
+{item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : ''}
+{item.estado ? ` · ${item.estado}` : ''}
+{item.pilar ? ` · ${item.pilar}` : ''}
+</div>
+  </div>
+  </div>
+  </div>
+);
+}
 
-    const load = useCallback(async () => {
-      setLoading(true);
-      setError(null);
-      try {
-      const params = new URLSearchParams(window.location.search);
-      const res = await fetch(`/api/grid?${params.toString()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error desconocido consultando Notion.');
-      setItems(data.items || []);
-      } catch (e) {
-      setError(e.message);
-      } finally {
-      setLoading(false);
-      }
-    }, []);
+export default function GridPage() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [cols, setCols] = useState(3);
+  const [dark, setDark] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
-    useEffect(() => {
-      const params = new URLSearchParams(window.location.search);
-      const c = parseInt(params.get('cols') || '3', 10);
-      if (c === 3 || c === 4) setCols(c);
-      setDark(params.get('theme') === 'dark');
-      load();
-    }, [load]);
+const load = useCallback(async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const res = await fetch(`/api/grid?${params.toString()}`, { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Error desconocido consultando Notion.');
+    setItems(data.items || []);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
-    return (
-    <div className={`wrap${dark ? ' dark' : ''}`}>
-      <div className="toolbar">
-      <span className="count">{items.length} publicaciones</span>
-      <button onClick={load} disabled={loading}>
-                       {loading ? 'Actualizando…' : '↻ Actualizar'}
-                       </button>
-                       </div>
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const c = parseInt(params.get('cols') || '3', 10);
+  if (c === 3 || c === 4) setCols(c);
+  setDark(params.get('theme') === 'dark');
+  load();
+}, [load]);
 
-                       {error && <div className="error">⚠ {error}</div>}
+const navigate = useCallback(
+  (delta) => {
+    setSelectedIndex((cur) => {
+      if (cur == null || items.length === 0) return cur;
+      return (cur + delta + items.length) % items.length;
+    });
+  },
+  [items.length]
+  );
 
-                       <div className="grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
-                       {items.map((item) => (
-                        <GridCell key={item.id} item={item} onOpen={setSelected} />
-                       ))}
+return (
+  <div className={`wrap${dark ? ' dark' : ''}`}>
+<div className="toolbar">
+  <span className="count">{items.length} publicaciones</span>
+<button
+className={`icon-btn${loading ? ' spinning' : ''}`}
+onClick={load}
+disabled={loading}
+aria-label="Actualizar"
+title="Actualizar"
+>
+  <RefreshIcon />
+  </button>
+  </div>
 
-      {!loading && items.length === 0 && !error && (
-        <div className="empty">
-        Todavía no hay publicaciones con imagen (Notion, link o Canva) y fecha cargadas en el Content Calendar.
-        <br />
-        Subí un archivo en "Portada", o pegá una URL / link de Canva en "Referencia", junto con una "Fecha de
-        Publicación" en Notion para que aparezcan acá.
-        </div>
-        )}
-        </div>
+{error && <div className="error">⚠ {error}</div>}
 
-        <Lightbox item={selected} onClose={() => setSelected(null)} />
-        </div>
-        );
-        }
-      
+<div className="grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+{items.map((item, i) => (
+  <GridCell key={item.id} item={item} index={i} onOpen={setSelectedIndex} />
+  ))}
+
+{!loading && items.length === 0 && !error && (
+  <div className="empty">
+  Todavía no hay publicaciones con imagen (Notion, link o Canva) y fecha cargadas en el Content Calendar.
+  <br />
+  Subí un archivo en "Portada", o pegá una URL / link de Canva en "Referencia", junto con una "Fecha de
+  Publicación" en Notion para que aparezcan acá.
+  </div>
+)}
+</div>
+
+<Lightbox items={items} index={selectedIndex} onClose={() => setSelectedIndex(null)} onNav={navigate} />
+  </div>
+);
+}
+}
