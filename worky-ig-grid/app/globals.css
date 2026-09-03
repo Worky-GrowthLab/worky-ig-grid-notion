@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: -apple-system, "SF Pro Display", "Inter", Helvetica, Arial, sans-serif;
+  color: #262626;
+}
+
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.wrap.dark {
+  color: #f5f5f5;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 4px 10px;
+  font-size: 12px;
+  color: #8e8e8e;
+}
+
+.toolbar .count {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.toolbar button {
+  border: 1px solid #dbdbdb;
+  background: #fff;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #262626;
+}
+
+.dark .toolbar button {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f5f5;
+}
+
+.toolbar button:hover {
+  filter: brightness(0.97);
+}
+
+.toolbar button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.grid {
+  display: grid;
+  gap: 3px;
+  background: #fff;
+}
+
+.dark .grid {
+  background: #0a0a0a;
+}
+
+.cell {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #efefef;
+  text-decoration: none;
+}
+
+.dark .cell {
+  background: #1c1c1c;
+}
+
+.cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.cell:hover img {
+  transform: scale(1.03);
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  pointer-events: none;
+}
+
+.cell .info {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 6px 8px;
+  font-size: 10px;
+  color: #fff;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), transparent);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.cell:hover .info {
+  opacity: 1;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 48px 16px;
+  text-align: center;
+  color: #8e8e8e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.error {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: rgba(202, 45, 54, 0.1);
+  color: #ca2d36;
+  font-size: 12px;
+}
