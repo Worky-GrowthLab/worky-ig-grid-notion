@@ -26,8 +26,7 @@ if (!token) {
 const body = {
     filter: {
         and: [
-            { property: 'Plataforma', select: { equals: platform } },
-            { property: 'Archivos y multimedia', files: { is_not_empty: true } },
+            { property: 'Plataforma', multi_select: { contains: platform } },            { property: 'Archivos y multimedia', files: { is_not_empty: true } },
             { property: 'Fecha de Publicación', date: { is_not_empty: true } },
             ],
     },
