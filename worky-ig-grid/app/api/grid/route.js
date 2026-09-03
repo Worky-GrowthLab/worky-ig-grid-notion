@@ -5,7 +5,8 @@ const NOTION_VERSION = '2025-09-03';
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const dataSourceId = searchParams.get('ds') || process.env.NOTION_DATA_SOURCE_ID;
-    const platform = searchParams.get('platform') || 'Instagram / Facebook';    const limit = Math.min(parseInt(searchParams.get('limit') || '24', 10) || 24, 60);
+    const platform = searchParams.get('platform') || 'Instagram / Facebook';
+    const limit = Math.min(parseInt(searchParams.get('limit') || '24', 10) || 24, 60);
 
 const token = process.env.NOTION_TOKEN;
 
@@ -25,7 +26,8 @@ if (!token) {
 const body = {
     filter: {
         and: [
-            { property: 'Plataforma', multi_select: { contains: platform } },            { property: 'Archivos y multimedia', files: { is_not_empty: true } },
+            { property: 'Plataforma', multi_select: { contains: platform } },
+            { property: 'Referencia', url: { is_not_empty: true } },
             { property: 'Fecha de Publicación', date: { is_not_empty: true } },
             ],
     },
@@ -63,13 +65,7 @@ const items = (data.results || [])
     .map((page) => {
         const props = page.properties || {};
 
-         const filesProp = props['Archivos y multimedia']?.files || [];
-        const firstFile = filesProp[0];
-        const imageUrl = firstFile
-        ? firstFile.type === 'file'
-            ? firstFile.file?.url
-            : firstFile.external?.url
-            : null;
+         const imageUrl = props['Referencia']?.url || null;
 
          const titleParts = props['Titulo']?.title || [];
         const title = titleParts.map((t) => t.plain_text).join('') || 'Sin título';
