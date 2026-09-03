@@ -27,8 +27,13 @@ const body = {
     filter: {
         and: [
             { property: 'Plataforma', multi_select: { contains: platform } },
-            { property: 'Referencia', url: { is_not_empty: true } },
             { property: 'Fecha de Publicación', date: { is_not_empty: true } },
+            {
+                or: [
+                    { property: 'Portada', files: { is_not_empty: true } },
+                    { property: 'Referencia', url: { is_not_empty: true } },
+                    ],
+            },
             ],
     },
     sorts: [{ property: 'Fecha de Publicación', direction: 'descending' }],
@@ -65,12 +70,37 @@ const items = (data.results || [])
     .map((page) => {
         const props = page.properties || {};
 
-         const imageUrl = props['Referencia']?.url || null;
+         const portadaFiles = props['Portada']?.files || [];
+        const portadaFile = portadaFiles[0];
+        const portadaUrl = portadaFile
+        ? portadaFile.type === 'file'
+            ? portadaFile.file?.url
+            : portadaFile.external?.url
+            : null;
+
+         const referenciaUrl = props['Referencia']?.url || null;
+        const isCanva = !!referenciaUrl && /canva\.com/i.test(referenciaUrl);
+
+         let imageUrl = null;
+        let embedUrl = null;
+        let sourceType = null;
+
+         if (portadaUrl) {
+             imageUrl = portadaUrl;
+             sourceType = 'notion';
+         } else if (referenciaUrl && isCanva) {
+             embedUrl = referenciaUrl;
+             sourceType = 'canva';
+         } else if (referenciaUrl) {
+             imageUrl = referenciaUrl;
+             sourceType = 'link';
+         }
 
          const titleParts = props['Titulo']?.title || [];
         const title = titleParts.map((t) => t.plain_text).join('') || 'Sin título';
 
-         const formatos = (props['Formato']?.multi_select || []).map((o) => o.name);
+         const formatoName = props['Formato']?.select?.name || null;
+        const formatos = formatoName ? [formatoName] : [];
         const estado = props['Estado']?.status?.name || null;
         const pilar = props['Pilar de contenido']?.select?.name || null;
         const fecha = props['Fecha de Publicación']?.date?.start || null;
@@ -80,13 +110,15 @@ const items = (data.results || [])
              url: page.url,
              title,
              imageUrl,
+             embedUrl,
+             sourceType,
              formatos,
              estado,
              pilar,
              fecha,
          };
     })
-    .filter((item) => !!item.imageUrl);
+    .filter((item) => !!item.imageUrl || !!item.embedUrl);
 
 return Response.json({ items, count: items.length });
 }
