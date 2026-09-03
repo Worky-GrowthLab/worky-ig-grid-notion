@@ -228,17 +228,16 @@ const navigate = useCallback(
 
 return (
   <div className={`wrap${dark ? ' dark' : ''}`}>
-<div className="toolbar">
-  <span className="count">{items.length} publicaciones</span>
-<button
-className={`icon-btn${loading ? ' spinning' : ''}`}
-onClick={load}
-disabled={loading}
-aria-label="Actualizar"
-title="Actualizar"
->
-  <RefreshIcon />
-  </button>
+      <div className="toolbar">
+          <button
+          className={`pill-btn${loading ? ' spinning' : ''}`}
+          onClick={load}
+          disabled={loading}
+        >
+                      <RefreshIcon />
+          {loading ? 'Actualizando…' : 'Actualizar'}
+</button>
+        <span className="count">{items.length} publicaciones</span>
   </div>
 
 {error && <div className="error">⚠ {error}</div>}
