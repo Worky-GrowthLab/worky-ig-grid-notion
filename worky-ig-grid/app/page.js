@@ -22,7 +22,7 @@ function CarouselIcon() {
 function FormatBadge({ formatos }) {
   if (!formatos || formatos.length === 0) return null;
   if (formatos.includes('Reel')) return <ReelIcon />;
-  if (formatos.includes('Carrusel')) return <CarouselIcon />;
+  if (formatos.includes('Carrousel')) return <CarouselIcon />;
   return null;
 }
 
