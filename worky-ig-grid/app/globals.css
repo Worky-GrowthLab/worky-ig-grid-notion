@@ -77,10 +77,136 @@ body {
   overflow: hidden;
   background: #efefef;
   text-decoration: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
 }
 
 .dark .cell {
   background: #1c1c1c;
+}
+
+.cell-canva-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.cell-click-catcher {
+  position: absolute;
+  inset: 0;
+}
+
+.badge-bottom-left {
+  top: auto;
+  right: auto;
+  bottom: 6px;
+  left: 6px;
+}
+
+.source-chip {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1000;
+}
+
+.lightbox-box {
+  position: relative;
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: min(520px, 92vw);
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-media {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.lightbox-canva-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.lightbox-meta {
+  padding: 12px 14px 14px;
+  color: #f5f5f5;
+}
+
+.lightbox-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.lightbox-sub {
+  font-size: 11px;
+  color: #a3a3a3;
+  margin-bottom: 8px;
+}
+
+.lightbox-link {
+  font-size: 12px;
+  color: #5fc2de;
+  text-decoration: none;
+}
+
+.lightbox-link:hover {
+  text-decoration: underline;
 }
 
 .cell img {
