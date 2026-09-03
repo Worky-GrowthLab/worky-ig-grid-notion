@@ -1,48 +1,29 @@
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  font-family: -apple-system, "SF Pro Display", "Inter", Helvetica, Arial, sans-serif;
-  color: #262626;
-}
-
-.wrap {
-  max-width: 680px;
-  margin: 0 auto;
-}
-
-.wrap.dark {
+dark .icon-btn {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
   color: #f5f5f5;
 }
 
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 4px 10px;
-  font-size: 12px;
-  color: #8e8e8e;
+.icon-btn:hover {
+  filter: brightness(0.97);
 }
 
-.toolbar .count {
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.icon-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
-.toolbar button {
-  border: 1px solid #dbdbdb;
-  background: #fff;
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  color: #262626;
+.icon-btn.spinning svg {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .dark .toolbar button {
@@ -157,6 +138,93 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.lightbox-topbar {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.lightbox-icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: none;
+
+background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.lightbox-menu-wrap {
+  position: relative;
+}
+
+.lightbox-menu {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  background: #1c1c1c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 150px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.lightbox-menu-item {
+  display: block;
+  padding: 9px 12px;
+  font-size: 12px;
+  color: #f5f5f5;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lightbox-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-nav:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.lightbox-nav-left {
+  left: 8px;
+}
+
+.lightbox-nav-right {
+  right: 8px;
 }
 
 .lightbox-media {
