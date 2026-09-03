@@ -5,8 +5,7 @@ const NOTION_VERSION = '2025-09-03';
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const dataSourceId = searchParams.get('ds') || process.env.NOTION_DATA_SOURCE_ID;
-    const platform = searchParams.get('platform') || 'Instagram';
-    const limit = Math.min(parseInt(searchParams.get('limit') || '24', 10) || 24, 60);
+    const platform = searchParams.get('platform') || 'Instagram / Facebook';    const limit = Math.min(parseInt(searchParams.get('limit') || '24', 10) || 24, 60);
 
 const token = process.env.NOTION_TOKEN;
 
