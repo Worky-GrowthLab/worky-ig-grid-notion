@@ -83,9 +83,9 @@ export default function GridPage() {
 
         {!loading && items.length === 0 && !error && (
           <div className="empty">
-            Todavía no hay publicaciones con imagen y fecha cargadas en el Content Calendar.
-            <br />
-            Subí un archivo en “Files &amp; media” y una “Fecha de Publicación” en Notion para que aparezcan acá.
+                        Todavía no hay publicaciones con Referencia (URL de imagen) y fecha cargadas en el Content Calendar.
+                      <br />
+                      Cargá una URL en "Referencia" y una "Fecha de Publicación" en Notion para que aparezcan acá.
           </div>
         )}
       </div>
